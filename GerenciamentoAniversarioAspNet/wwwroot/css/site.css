@@ -12,10 +12,14 @@ a {
   color: #0366d6;
 }
 
+.fundo {
+    background: url(https://pm1.narvii.com/6247/b55688c4188cb0ce4cbef73de57e184046d7684a_00.jpg);
+}
+
 .btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {

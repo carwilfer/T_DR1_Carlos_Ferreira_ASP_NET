@@ -36,6 +36,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.DataNascimento)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Dias)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -52,10 +55,13 @@
                 @Html.DisplayFor(modelItem => item.Sobrenome)
             </td>
             <td>
-                @item.DataNascimento.ToString("dd/MM/yyyy"))
+                @item.DataNascimento.ToString("dd/MM/yyyy")
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                @item.Dias
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Details", "Details", new { id = item.Id }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.Id })
             </td>

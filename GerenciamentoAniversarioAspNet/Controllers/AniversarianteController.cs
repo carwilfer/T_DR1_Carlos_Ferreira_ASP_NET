@@ -31,6 +31,26 @@ namespace GerenciamentoAniversarioAspNet.Controllers
             return View(model);
         }
 
+
+        private static string ListaDeAniversarianteHoje(Aniversariante aniversariante)
+        {
+            string retorno;
+            DateTime aniversarioAnoCorrente = new DateTime(DateTime.Now.Year, aniversariante.DataNascimento.Month, aniversariante.DataNascimento.Day);
+            if (aniversarioAnoCorrente.Date > DateTime.Now.Date)
+            {
+                TimeSpan ts = aniversarioAnoCorrente.Date - DateTime.Now.Date;
+                retorno = string.Format("Faltam {0} dias para seu aniversário.", ts.Days);
+            }
+            else
+            {
+                DateTime aniversarioProximoAno = new DateTime(DateTime.Now.Year + 1, aniversariante.DataNascimento.Month, aniversariante.DataNascimento.Day);
+                TimeSpan ts = aniversarioProximoAno.Date - DateTime.Now.Date;
+                retorno = string.Format("Faltam {0} dias para seu aniversário.", ts.Days);
+            }
+
+            return retorno;
+        }
+
         // GET: AniversarianteController/Create
         public ActionResult Create()
         {

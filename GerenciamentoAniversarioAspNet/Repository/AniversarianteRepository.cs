@@ -79,8 +79,24 @@ namespace GerenciamentoAniversarioAspNet.Repository
             using (SqlConnection connection = new SqlConnection(this.ConnectionString))
             {
                 string sql = @"
-                        SELECT ID, NOME, SOBRENOME, DATANASCIMENTO
+                        SELECT ID, NOME, SOBRENOME, DATANASCIMENTO,
+                        CAST(DATEDIFF(
+                            d,
+                            CAST(GETDATE() AS DATE),
+                            DATEFROMPARTS(
+                                CASE
+                                    -- se usar o mes e dia do nascimento e o ano atual e ficar depois de hj, aniversário é esse ano
+                                    WHEN DATEFROMPARTS(YEAR(GETDATE()), MONTH(DATANASCIMENTO), DAY(DATANASCIMENTO)) >= CAST(GETDATE() AS DATE)
+                                        THEN YEAR(GETDATE())
+                                    -- senão só ano que vem
+                                    ELSE YEAR(GETDATE()) + 1
+                                END,
+                                MONTH(DATANASCIMENTO),
+                                DAY(DATANASCIMENTO)
+                            )
+                        ) AS VARCHAR) DIASINT
                         FROM ANIVERSARIANTE
+                        ORDER BY DIASINT ASC
                 ";
                 result = connection.Query<Aniversariante>(sql).ToList();
             }
@@ -110,14 +126,60 @@ namespace GerenciamentoAniversarioAspNet.Repository
             using (SqlConnection connection = new SqlConnection(this.ConnectionString))
             {
                 string sql = @"
-                        SELECT ID, NOME, SOBRENOME, DATANASCIMENTO
+                        SELECT ID, NOME, SOBRENOME, DATANASCIMENTO,
+                        CAST(DATEDIFF(
+                            d,
+                            CAST(GETDATE() AS DATE),
+                            DATEFROMPARTS(
+                                CASE
+                                    -- se usar o mes e dia do nascimento e o ano atual e ficar depois de hj, aniversário é esse ano
+                                    WHEN DATEFROMPARTS(YEAR(GETDATE()), MONTH(DATANASCIMENTO), DAY(DATANASCIMENTO)) >= CAST(GETDATE() AS DATE)
+                                        THEN YEAR(GETDATE())
+                                    -- senão só ano que vem
+                                    ELSE YEAR(GETDATE()) + 1
+                                END,
+                                MONTH(DATANASCIMENTO),
+                                DAY(DATANASCIMENTO)
+                            )
+                        ) AS VARCHAR) DIASINT
                         FROM ANIVERSARIANTE
                         WHERE (NOME LIKE '%' + @P1 +'%' OR SOBRENOME LIKE '%' + @P2 + '%')
-                        ORDER BY DATANASCIMENTO ASC
+                        ORDER BY DIASINT ASC
                 ";
                 result = connection.Query<Aniversariante>(sql, new { P1 = query, p2 = query}).ToList();
             }
             return result;
         }
+        public IEnumerable<Aniversariante> NiverDay()
+        {
+            List<Aniversariante> result = new List<Aniversariante>();
+
+            using (SqlConnection connection = new SqlConnection(this.ConnectionString))
+            {
+                string sql = @"
+                        SELECT ID, NOME, SOBRENOME, DATANASCIMENTO,
+                        DATEDIFF(
+                            'D',
+                            GETDATE(),
+                            DATEFROMPARTS(
+                                CASE
+                                    WHEN DAY(DATANASCIMENTO) >= DAY(GETDATE())
+                                        AND MONTH(DATANASCIMENTO) >= MONTH(GETDATE())
+                                        THEN YEAR(GETDATE())
+                                ELSE YEAR(GETDATE()) + 1
+                                END,
+                                MONTH(DATANASCIMENTO),
+                                DAY(DATANASCIMENTO)
+                            )
+                        ) DIAS
+                        FROM ANIVERSARIANTE
+                        ORDER BY DIAS ASC
+                ";
+
+                result = connection.Query<Aniversariante>(sql).ToList();
+            }
+            return result;
+        }
+
     }
 }

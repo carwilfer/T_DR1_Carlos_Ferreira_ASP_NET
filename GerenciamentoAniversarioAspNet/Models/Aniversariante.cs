@@ -21,6 +21,33 @@ namespace GerenciamentoAniversarioAspNet.Models
         [DataType(DataType.Date)]
         [Display(Name = "Data Nascimento")]
         public DateTime DataNascimento { get; set; }
-    }
 
+        [Display(Name = "Dias para o aniversário (int)")]
+        public int DiasInt { get; }
+
+        [Display(Name = "Dias para o aniversário")]
+        public String Dias
+        {
+            get
+            {
+                if (DiasInt == 0)
+                {
+                    return "Feliz aniversário!";
+                }
+                else
+                {
+                    return DiasInt.ToString();
+                }
+
+            }
+        }
+
+        public int ExibirAniversariantesDoDia()
+        {
+            var proximoNiver = this.DataNascimento.AddYears(DateTime.Now.Year - this.DataNascimento.Year);
+            proximoNiver = (proximoNiver.Date < DateTime.Now.Date) ? proximoNiver.AddYears(1) : proximoNiver;
+            var teste = (proximoNiver.Date - DateTime.Now.Date).Days;
+            return (proximoNiver - DateTime.Now.Date).Days;
+        }
+    }
 }
